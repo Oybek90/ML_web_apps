@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MNIST Digit Recognition</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <h1>MNIST Digit Recognition</h1>
+    <form method="post" enctype="multipart/form-data" id="uploadForm">
+        <input type="file" name="image" id="fileInput">
+        <button type="button" onclick="recognize()">Recognize</button>
+        <button type="button" onclick="clearImage()">Clear</button>
+    </form>
+    <div id="result"></div>
+    <div id="uploadedImageDiv" style="display:none;">
+        <h2>Uploaded Image:</h2>
+        <img id="uploadedImage" src="" alt="Uploaded Image">
+    </div>
+    <div class="information">
+        <div class="logos">
+            <img src="https://linkhi.co/uploads/block_thumbnail_images/254884778033a5cc85922a2d5891263f.png" alt="img">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png" alt="img">
+            <img src="https://logos.edu.mx/wp-content/uploads/2021/01/YouTube-LOGO.png" alt="img">
+        </div>
+        <h4>@machine_learning_lab</h4>
+        <h3>Author: Oybek Eraliev</h3>
+    </div>
+
+    <script>
+        function recognize() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+
+            fetch("/", {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = `<h1>Predicted Label: ${data.label}</h1>`;
+                document.getElementById('uploadedImageDiv').style.display = "block";
+                document.getElementById('uploadedImage').src = URL.createObjectURL(file);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function clearImage() {
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('uploadedImageDiv').style.display = "none";
+        }
+    </script>
+</body>
+</html>
